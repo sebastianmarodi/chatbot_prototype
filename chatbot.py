@@ -17,7 +17,6 @@ from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 def config():
     load_dotenv()
 
-
 config()
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"), 
                  temperature=0.0, 
@@ -52,7 +51,7 @@ len(res), len(res[0])
 index_name = "kegg-medicus-database-index"
 
 pinecone.init(      
-	api_key=os.getenv("OPENAI_API_KEY"),      
+	api_key=os.getenv("PINECONE_API_KEY"),      
 	environment=os.getenv("PINECONE_ENV")     
 )      
 index = pinecone.Index('kegg-medicus-database-index')
@@ -152,7 +151,6 @@ agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
 agent_chain = AgentExecutor.from_agent_and_tools(
     agent=agent, tools=tools, verbose=True, memory=memory
 )
-
 
 langchain.debug = False
 
