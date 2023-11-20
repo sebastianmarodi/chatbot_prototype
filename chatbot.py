@@ -152,5 +152,7 @@ agent_chain = AgentExecutor.from_agent_and_tools(
     agent=agent, tools=tools, verbose=True, memory=memory
 )
 
+def get_response(input):
+    return agent_chain(input)
 langchain.debug = False
 

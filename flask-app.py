@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask import Flask, render_template, request
-from chatbot import agent_chain
+from chatbot import get_response
 app = Flask(__name__)
 
 @app.route('/chat', methods=['POST'])
@@ -11,9 +11,9 @@ def chat():
   # Process user_input with your chatbot
   # ...
   # Get chatbot's response
-  chatbot_response = agent_chain(user_input)
+  chatbot_response = get_response(user_input)
   response = chatbot_response['output']
-  response.mimetype = "text/plain"
+  #response.mimetype = "text/plain"
   return response
 
 if __name__ == '__main__':
