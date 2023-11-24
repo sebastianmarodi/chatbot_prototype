@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-const chatbotAPIUrl = 'https://your-chatbot-api-url';
 
-// Chat window component to display messages with timestamps
-const ChatWindow = ({ messages }) => (
-  <div className="chat-window">
-    {messages.map((message) => (
-      <div className="message">
-        <span className="timestamp">{message.timestamp}</span>
-        <span className={message.type === 'user' ? 'user-message' : 'bot-message'}>
-          {message.text}
-        </span>
-      </div>
-    ))}
-  </div>
-);
+const ChatApp = () => {
+  const chatbotAPIUrl = 'https://your-chatbot-api-url';
 
-// Input field component with autocompletion and suggestion feature
-const InputField = ({ userInput, setUserInput, suggestions }) => {
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [userInput, setUserInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [userName, setUserName] = useState('');
+  const [userPreferences, setUserPreferences] = useState({
+    messageColor: '#2196F3',
+    botMessageColor: '#212121',
+    inputFieldColor: '#FFFFFF',
+    sendButtonColor: '#2196F3',
+    enableEmojis: true,
+    enableVoiceInput: false, // Remove this line to disable voice input
+  });
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (event) => {
     const inputText = event.target.value;
@@ -39,99 +38,49 @@ const InputField = ({ userInput, setUserInput, suggestions }) => {
     setFilteredSuggestions([]);
   };
 
-  return (
-    <>
-      <input
-        type="text"
-        className="input-field"
-        value={userInput}
-        onChange={handleInputChange}
-      />
-      {filteredSuggestions.length > 0 && (
-        <ul className="suggestions">
-          {filteredSuggestions.map((suggestion) => (
-            <li key={suggestion} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  );
-};
-
-// Send button component with feedback and error handling
-const SendButton = ({ handleSendMessage, isSending, error }) => {
   const handleSendButtonClick = () => {
-    handleSendMessage();
+    if (userInput.trim()) {
+      setIsSending(true);
+
+      axios
+        .post(chatbotAPIUrl, {
+          message: userInput,
+        })
+        .then((response) => {
+          const newMessage = {
+            text: response.data.message,
+            type: 'bot',
+            timestamp: new Date().toLocaleTimeString(),
+          };
+
+          setMessages([...messages, newMessage]);
+          setUserInput('');
+          setIsSending(false);
+        })
+        .catch((error) => {
+          setError(error);
+          setIsSending(false);
+        });
+    }
   };
 
+  useEffect(() => {
+    // Fetch initial suggestions or other data
+    // Example:
+    axios.get('https://your-suggestions-api-url')
+      .then((response) => {
+        setSuggestions(response.data.suggestions);
+      })
+      .catch((error) => {
+        console.error('Error fetching suggestions:', error);
+      });
+  }, []);
+
   return (
-    <button
-      className="send-button"
-      onClick={handleSendButtonClick}
-      disabled={isSending || error}
-    >
-      Send
-    </button>
+    <div>
+      {/* Render your components here, including ChatWindow, InputField, and SendButton */}
+    </div>
   );
 };
 
-// State variable to store messages, user input, and suggestions
-const [messages, setMessages] = useState([]);
-const [userInput, setUserInput] = useState('');
-const [suggestions, setSuggestions] = useState([]);
-
-// Fetch initial messages and suggestions from the chatbot API
-useEffect(() => {
-  axios.get(chatbotAPIUrl + '/messages')
-    .then((response) => setMessages(response.data.messages));
-
-  axios.get(chatbotAPIUrl + '/suggestions')
-    .then((response) => setSuggestions(response.data.suggestions));
-}, []);
-
-// Function to handle sending user input
-const handleSendMessage = () => {
-  if (userInput.length === 0) {
-    return;
-  }
-
-  axios.post(chatbotAPIUrl, {
-    message: userInput,
-  })
-    .then((response) => {
-      const newMessages = [...messages, response.data.message];
-      setMessages(newMessages);
-      setUserInput('');
-    })
-    .catch((error) => {
-      console.error('Error sending message:', error);
-    });
-};
-
-// Update UI with the chatbot's response and handle errors
-useEffect(() => {
-  axios.get(`${chatbotAPIUrl}/messages?latest=true`)
-    .then((response) => {
-      if (response.data.message) {
-        const newMessages = [...messages, response.data.message];
-        setMessages(newMessages);
-      }
-    })
-    .catch((error) => {
-      console.error('Error updating messages:', error);
-    });
-}, [messages.length]);
-
-// Render the chatbot UI
-return (
-  <>
-    <div className="chatbot-container">
-      <ChatWindow messages={messages} />
-      <InputField userInput={userInput} setUserInput={setUserInput} suggestions={suggestions} />
-      <SendButton handleSendMessage={handleSendMessage} isSending={false} error={false} />
-    </div>
-  </>
-);
-
+export default ChatApp;
