@@ -13,7 +13,7 @@
 }%%
 
 ```mermaid
-flowchart TD;
+flowchart LR;
     id0((User)) === id1[Prompt];
 
     id1 === | Guardrails | API ==> id2[Framework\n Agent Executor] 
