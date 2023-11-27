@@ -19,7 +19,7 @@ flowchart LR;
     id1 ===  API ==> | Guardrails | id2[Framework\n Agent Executor] 
    
     id2 ==>| Context | LLM
-    LLM  ==> | Guardrails | id7{Response} 
+    LLM  ===> | Guardrails | id7{Response} 
 
     id3 --- id2
     id3{{Embedding\n Model}} 
@@ -27,5 +27,6 @@ flowchart LR;
     id5[(Vectore\n Database)] -.- id3
     id6(((Web Search))) -.- id3
     
-    id7 ==> id0 
+    id7 ==> id0
+
 ```
