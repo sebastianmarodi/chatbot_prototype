@@ -3,11 +3,11 @@
   init: {
     'theme': 'base',
     'themeVariables': {
-      'primaryColor': '#ffffff',
+      'primaryColor': '#52dea0',
       'primaryTextColor': '#0f3849',
-      'primaryBorderColor': '#62ddd6',
-      'lineColor': '#52dea0',
-      'secondaryColor': '#52dea0',
+      'primaryBorderColor': '#6ecef2',
+      'lineColor': '#008cef',
+      'secondaryColor': '#ffff',
       'tertiaryColor': '#6ccbef'
     }
   }
