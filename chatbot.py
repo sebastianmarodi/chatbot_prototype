@@ -4,8 +4,7 @@ import tiktoken
 import pinecone  
 import langchain
 from dotenv import load_dotenv 
-from langchain import LLMChain  
-from langchain.chains import RetrievalQA
+from langchain.chains import RetrievalQA, LLMChain
 from langchain.vectorstores import Pinecone 
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
