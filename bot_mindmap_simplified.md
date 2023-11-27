@@ -1,18 +1,17 @@
+```mermaid
 %%{
   init: {
     'theme': 'base',
     'themeVariables': {
-      'primaryColor': '#034172',
-      'primaryTextColor': '#fff',
-      'primaryBorderColor': '#7C0000',
+      'primaryColor': '#ffffff',
+      'primaryTextColor': '#0f3849',
+      'primaryBorderColor': '#62ddd6',
       'lineColor': '#52dea0',
       'secondaryColor': '#52dea0',
       'tertiaryColor': '#6ccbef'
     }
   }
 }%%
-
-```mermaid
 flowchart LR;
     id0((User)) === id1[Prompt];
 
