@@ -16,10 +16,10 @@
 flowchart LR;
     id0((User)) === id1[Prompt];
 
-    id1 === | Guardrails | API ==> id2[Framework\n Agent Executor] 
+    id1 ===  API ==> | Guardrails | id2[Framework\n Agent Executor] 
    
     id2 ==>| Context | LLM
-    LLM  ==>  id7{Response} 
+    LLM  ==> | Guardrails | id7{Response} 
 
     id3 --- id2
     id3{{Embedding\n Model}} 
