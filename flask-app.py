@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-from flask import Flask, render_template, request
+from flask import Flask, request
 from flask_cors import CORS
 from chatbot import get_response
 
@@ -15,9 +14,9 @@ def chat():
   # ...
   # Get chatbot's response
   chatbot_response = get_response(user_input)
-  response = chatbot_response['output']
+  response = chatbot_response
   #response.mimetype = "text/plain"
   return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
