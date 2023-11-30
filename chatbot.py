@@ -76,8 +76,14 @@ qa = RetrievalQA.from_chain_type(
 # websearch powered by DuckDuckGo
 search = DuckDuckGoSearchRun()
 def duck_wrapper(input_text):
-    search_results = search.run(f'''site:webmd.com{input_text}''')
-    return search_results
+    try:
+        search_results = search.run(f'''site:medlineplus.gov {input_text}''') 
+    except Exception as er:
+        print(er)
+        return "There was an error fetching results for that query. Please try again"
+    # print(search_results)
+    else:
+        return search_results
 
 # conversation summary tool
 mem_template = """This is a conversation between a human and a bot:
