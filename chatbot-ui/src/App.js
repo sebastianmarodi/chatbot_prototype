@@ -55,20 +55,18 @@ const App = () => {
   };
   
   return (
-    <div className="App">  
+    <div className="App">
       <div className="main">
-        <div className="site-identity"> 
-            <img src={logo} alt="logo" className="logo"/>
-            <span>Medi-Guide</span>
-          </div>
+      <div className="site-identity"> 
+        <img src={logo} alt="logo" className="logo"/>
+        <span>Medi-Guide</span>
+      </div>  
         <div className="chat-window">
           {chatMessages.map((message, index) => (
             <div key={index} className={`chat-bubble ${message.type}`} >
               {message.text}
             </div>
           ))}
-          {/* Display loading indicator if loading is true */}
-          {loading && <div className="loading-indicator"></div>}
         </div>
         <div className="chat-footer">
           <div className="input-section">
@@ -76,10 +74,13 @@ const App = () => {
               id="user-input"
               name="chat" 
               type="text"  
+              className="input-field"
               placeholder="Message Medi-Guide..."
               value={userInput}
               onChange={handleInputChange}
              />
+            {/* Display loading indicator if loading is true */}
+            {loading && <div className="loading-indicator"></div>}
             <button className="send" onClick={handleSendMessage}>
               <img src={send_icon} alt="send button"/>
             </button>
