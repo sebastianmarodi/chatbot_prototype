@@ -5,18 +5,15 @@ from chatbot import get_response
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat():
   # Receive input from client
   user_input = request.json.get('user_input')
-
   # Process user_input with your chatbot
   # ...
   # Get chatbot's response
-  chatbot_response = get_response(user_input)
-  response = chatbot_response
   #response.mimetype = "text/plain"
-  return response
+  return get_response(user_input)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run()

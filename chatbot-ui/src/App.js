@@ -21,7 +21,7 @@ const App = () => {
       // Set loading state to true
       setLoading(true);
 
-      const response = await fetch('http://localhost:5000/chat', {
+      const response = await fetch('https://chatbot-prototype-pink.vercel.app/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
