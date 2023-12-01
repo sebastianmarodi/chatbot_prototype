@@ -36,16 +36,7 @@ pinecone.init(
 
 index_name = 'kegg-medicus-database-index'
 
-index = None
-
-def load_or_create_index():
-    global index
-    if index is not None:
-        return index
-
-    index = pinecone.Index(index_name)
-
-    return index
+index = pinecone.Index(index_name)
 
 vectorstore = Pinecone(
     index=index, 
@@ -123,7 +114,8 @@ tool_names = [tool.name for tool in tools]
 # initialization of zero shot agent prompt template
 from langchain.agents import ZeroShotAgent
 
-prefix = """Act as an expert medical advisor. Answering question as best as YOU can. 
+prefix = """Act as an expert medical advisor. 
+Answering question as best as YOU can. 
 You have access to the following tools:"""
 
 suffix = """Begin!"
