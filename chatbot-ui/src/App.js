@@ -3,6 +3,8 @@ import './App.css';
 import logo from './assets/medi-guide-logo.svg';
 import send_icon from './assets/send.svg';
 
+const apiEnpoint = process.env.REACT_APP_API_ENDPOINT
+
 const App = () => {
   const [userInput, setUserInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
@@ -21,7 +23,7 @@ const App = () => {
       // Set loading state to true
       setLoading(true);
 
-      const response = await fetch("https://chatbot-prototype-pink.vercel.app/chat", {   //process.env.API_ENDPOINT
+      const response = await fetch(apiEnpoint, {   //process.env.API_ENDPOINT
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
