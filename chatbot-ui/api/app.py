@@ -5,7 +5,7 @@ import pinecone
 import langchain
 from flask_cors import CORS
 from dotenv import load_dotenv 
-from flask import Flask, request
+from flask import Flask, request, make_response, jsonify
 from langchain.vectorstores import Pinecone 
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
@@ -34,19 +34,18 @@ pinecone.init(
 	environment=os.getenv("PINECONE_ENV")     
 )   
 
-index_name = "kegg-medicus-database-index"
-index_filename = "cached_index.joblib"
+index_name = 'kegg-medicus-database-index'
 
-if os.path.exists(index_filename):
-    # Load cached index if it exists
-    index = joblib.load(index_filename)
-else:
-    # Create index (your original index creation logic)
-    index = pinecone.Index('kegg-medicus-database-index')
-    # Cache the index
-    joblib.dump(index, index_filename)
+index = None
 
-# switch back to normal index for langchain
+def load_or_create_index():
+    global index
+    if index is not None:
+        return index
+
+    index = pinecone.Index(index_name)
+
+    return index
 
 vectorstore = Pinecone(
     index=index, 
