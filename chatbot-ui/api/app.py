@@ -17,8 +17,8 @@ from langchain.utilities import DuckDuckGoSearchAPIWrapper
 from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 
 load_dotenv()
-
 verbosity = False
+joblib.parallel.BACKEND = 'loky'
 
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"), 
                  temperature=0.0, 
@@ -35,8 +35,18 @@ pinecone.init(
 )   
 
 index_name = 'kegg-medicus-database-index'
+index_filename = "/static/cached_index.joblib"
 
-index = pinecone.Index(index_name)
+if os.path.exists(index_filename):
+    # Load cached index if it exists
+    index = joblib.load(index_filename)
+else:
+    # Create index (your original index creation logic)
+    index = pinecone.Index(index_name)
+    # Cache the index
+    joblib.dump(index, index_filename)
+
+
 
 vectorstore = Pinecone(
     index=index, 
