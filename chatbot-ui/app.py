@@ -3,9 +3,9 @@ from flask_cors import CORS
 from chatbot import get_response
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/chat": {"origins": "https://chatbot-prototype-pink.vercel.app"}})
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/chat', methods=['POST'])
 def chat():
   # Receive input from client
   user_input = request.json.get('user_input')
