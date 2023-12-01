@@ -16,4 +16,4 @@ def chat():
   return get_response(user_input)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
