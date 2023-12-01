@@ -2,7 +2,7 @@ import os
 from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv 
-from chatbot import get_response
+from _utils.chatbot import get_response
 
 def config():
   load_dotenv()
