@@ -1,24 +1,22 @@
 import os
 import openai
-import tiktoken
+import joblib
 import pinecone  
 import langchain
 from flask_cors import CORS
 from dotenv import load_dotenv 
 from flask import Flask, request
-from langchain.chains import RetrievalQA, LLMChain
 from langchain.vectorstores import Pinecone 
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import DuckDuckGoSearchRun
 from langchain.agents import AgentExecutor, Tool
+from langchain.chains import RetrievalQA, LLMChain
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.utilities import DuckDuckGoSearchAPIWrapper
 from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 
-def config():
-  load_dotenv()
-
-config()
+load_dotenv()
 
 verbosity = False
 
@@ -26,49 +24,34 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"),
                  temperature=0.0, 
                  model_name='gpt-4-1106-preview')
 
-tiktoken.encoding_for_model('gpt-4-1106-preview')
-
-tokenizer = tiktoken.get_encoding('cl100k_base')
-
-def tiktoken_len(text):
-    tokens = tokenizer.encode(
-        text,
-        disallowed_special=()
-    )
-    return len(tokens)
-
-model_name = 'text-embedding-ada-002'
-
 embed = OpenAIEmbeddings(
-    model=model_name,
+    model='text-embedding-ada-002',
     openai_api_key=openai.api_key
 )
-
-example_texts = [
-    'this is the first chunk of text',
-    'then another second chunk of text is here'
-]
-
-res = embed.embed_documents(example_texts)
-len(res), len(res[0])
-
-index_name = "kegg-medicus-database-index"
 
 pinecone.init(      
 	api_key=os.getenv("PINECONE_API_KEY"),      
 	environment=os.getenv("PINECONE_ENV")     
-)      
-index = pinecone.Index('kegg-medicus-database-index')
+)   
 
-text_field = "text"
+index_name = "kegg-medicus-database-index"
+index_filename = "cached_index.joblib"
+
+if os.path.exists(index_filename):
+    # Load cached index if it exists
+    index = joblib.load(index_filename)
+else:
+    # Create index (your original index creation logic)
+    index = pinecone.Index('kegg-medicus-database-index')
+    # Cache the index
+    joblib.dump(index, index_filename)
 
 # switch back to normal index for langchain
-index = pinecone.Index(index_name)
 
 vectorstore = Pinecone(
     index=index, 
     embedding=embed, #.embed_query(), 
-    text_key=text_field
+    text_key= "text"
 )
 
 # vectore database
@@ -79,10 +62,11 @@ qa = RetrievalQA.from_chain_type(
 )
 
 # websearch powered by DuckDuckGo
-search = DuckDuckGoSearchRun()
+wrapper = DuckDuckGoSearchAPIWrapper(max_results=10)
+search = DuckDuckGoSearchRun(api_wrapper=wrapper, backend='text')
 def duck_wrapper(input_text):
     try:
-        search_results = search.run(f'''site:medlineplus.gov {input_text}''') 
+        search_results = search.run(f'''{input_text}''') 
     except Exception as er:
         print(er)
         return "There was an error fetching results for that query. Please try again"
