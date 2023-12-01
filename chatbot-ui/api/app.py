@@ -20,6 +20,8 @@ def config():
 
 config()
 
+verbosity = False
+
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"), 
                  temperature=0.0, 
                  model_name='gpt-4-1106-preview')
@@ -102,7 +104,7 @@ readonlymemory = ReadOnlySharedMemory(memory=memory)
 summary_chain = LLMChain(
     llm=llm,
     prompt=mem_prompt,
-    verbose=True,
+    verbose=verbosity,
     memory=readonlymemory,  # use the read-only memory to prevent the tool from modifying the memory
 )
 
@@ -156,15 +158,15 @@ prompt = ZeroShotAgent.create_prompt(
 
 #  initializing zeroshot agent chain
 llm_chain = LLMChain(llm=llm, prompt=prompt)
-agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
+agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=verbosity)
 
 agent_chain = AgentExecutor.from_agent_and_tools(
-    agent=agent, tools=tools, verbose=True, memory=memory
+    agent=agent, tools=tools, verbose=verbosity, memory=memory
 )
 
 def get_response(input):
     return agent_chain(input)
-langchain.debug = False
+langchain.debug = verbosity
 
 
 app = Flask(__name__)
