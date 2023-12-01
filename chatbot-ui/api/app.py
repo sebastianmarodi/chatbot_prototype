@@ -145,7 +145,7 @@ langchain.debug = verbosity
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/chat": {"origins": os.getenv("CORS_ORIGIN")}})
+CORS(app, resources={r"/chat": {"origins": os.getenv("CORS_ORIGIN")}})
 
 @app.route('/chat', methods=['POST'])
 def chat():
