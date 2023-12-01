@@ -170,7 +170,7 @@ langchain.debug = False
 app = Flask(__name__)
 CORS(app, resources={r"api/chat": {"origins": os.getenv("CORS_ORIGIN")}})
 
-@app.route('api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat():
 
   # Receive input from client
